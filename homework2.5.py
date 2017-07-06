@@ -1,37 +1,25 @@
 # -*- coding: utf-8 -*-
 import os
+import subprocess
 
-def find_sql_files(dir_path):
-    sql_files = []
+def find_photo(dir_path):
+    photo = []
     for file in os.listdir(dir_path):
-        if file[-4:] == '.sql':
-            sql_files.append(file)
-    return sql_files
+        photo.append(file)
+    return photo
 
-def search_in_file(file_name, query):
-     with open(file_name) as file:
-         text = file.read()
-         if text.find(query) == -1:
-             return False
-         else:
-             return True
-
-def search_query_in_files_list(dir_path, query, files_list):
-    result_files = []
-    for file in files_list:
-        if search_in_file(os.path.join(dir_path, file), query):
-            result_files.append(file)
-    return result_files
-         
-
+def resize(file_name, start_dir):
+    dir_path = os.path.join(start_dir, 'convert')
+    path_start_photo = os.path.join(start_dir, 'Source', file_name)
+    path_finish_photo = os.path.join(start_dir, 'Result', file_name)
+    subprocess.run(dir_path + ' ' + path_start_photo +' -resize 200 ' + path_finish_photo)
+    
 def main():
-    dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'Migrations')
-    result_files = find_sql_files(dir_path)
-    while True:
-        query = input('Введите строку: ')
-        result_files = search_query_in_files_list(dir_path, query, result_files)
-        print(result_files)
-        print('Всего: {}'.format(len(result_files)))
+    start_dir = os.path.dirname(os.path.realpath(__file__))
+    photo_list = find_photo(os.path.join(start_dir, 'Source'))
+    for photo in photo_list:
+        resize(photo, start_dir)
 
 main()
+
         
