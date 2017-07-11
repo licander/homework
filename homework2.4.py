@@ -4,7 +4,7 @@ import os
 def find_sql_files(dir_path):
     sql_files = []
     for file in os.listdir(dir_path):
-        if file[-4:] == '.sql':
+        if file.endswith('.sql'):
             sql_files.append(file)
     return sql_files
 
@@ -30,7 +30,8 @@ def main():
     while True:
         query = input('Введите строку: ')
         result_files = search_query_in_files_list(dir_path, query, result_files)
-        print(result_files)
+        for file in result_files:
+            print(file)
         print('Всего: {}'.format(len(result_files)))
 
 main()
