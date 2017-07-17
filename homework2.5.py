@@ -21,5 +21,4 @@ def main():
         resize(photo, start_dir)
 
 main()
-
         
