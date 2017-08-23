@@ -37,7 +37,7 @@ class LinkedList:
             current = LinkedListNode(value)
             if previous:
                 previous.next = current
-            self.head = self.head or current
+            self.head = self.head or current            
             previous = current
 
     def __iter__(self):
@@ -46,8 +46,18 @@ class LinkedList:
             yield current.data
             current = current.next
 
-    def reverse(self) -> None:
-        raise NotImplementedError
+    def reverse(self):
+        values = []
+        for i in self:
+            values.append(i)
+        previous = None
+        self.head = None
+        for value in values[::-1]:
+            current = LinkedListNode(value)
+            if previous:
+                previous.next = current
+            self.head = self.head or current            
+            previous = current        
 
 
 class LinkedListTestCase(unittest.TestCase):
