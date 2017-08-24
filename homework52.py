@@ -47,6 +47,14 @@ class LinkedList:
             current = current.next
 
     def reverse(self):
+<<<<<<< HEAD
+        previous = None
+        for i in self:
+            current = LinkedListNode(i)
+            current.next = previous
+            previous = current
+        self.head = previous
+=======
         values = []
         for i in self:
             values.append(i)
@@ -58,6 +66,7 @@ class LinkedList:
                 previous.next = current
             self.head = self.head or current            
             previous = current        
+>>>>>>> bfcba2fcf24ff466b8849f1a95454796d49017e9
 
 
 class LinkedListTestCase(unittest.TestCase):
