@@ -3,20 +3,10 @@ from urllib.parse import urlencode
 import requests
 from time import sleep
 
-token='32f45264a89d42fdbadc17d5a051dcab9beaf55473e03564f476426564308de4ac70abbc3c32998d45518'
+token='5dfd6b0dee902310df772082421968f4c06443abecbc082a8440cb18910a56daca73ac8d04b25154a1128'
 url = 'https://oauth.vk.com/authorize'
 APP_ID = '6160914'
 VERSION = '5.67'
-
-auth_data = {
-        'client_id': APP_ID,
-        'redirect_uri': 'https://oauth.vk.com/blank.html',
-        'display': 'mobile',
-        'scope': 'friends',
-        'response_type': 'token',
-        'v': VERSION,
-        }
-# print('?'.join((url, urlencode(auth_data))))
 
 
 def get_friends_set(user_id=''):
@@ -30,13 +20,25 @@ def get_friends_set(user_id=''):
         params['user_id'] = user_id
     response = requests.get('https://api.vk.com/method/friends.get', params)
     res = response.json()
-    print(res)
     if res.get('error'):
         return 1
     friend_set = set()
     for friend in res['response']['items']:
         friend_set.add(friend['id'])
     return friend_set
+
+
+def get_groups(user_id):
+    params = {
+        'access_token': token,
+        'user_id': user_id,
+        'v': VERSION,
+        'count': 1000,
+        'extended': 0
+        }
+    response = requests.get('https://api.vk.com/method/groups.get', params)
+    res = response.json()
+    return res
 
 
 def get_general_friends():
@@ -56,5 +58,5 @@ def get_general_friends():
         sleep(0.34)
     return(general_friends)
 
-print(get_general_friends())
+print(get_groups('5030613'))
 # {167837}
