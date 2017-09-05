@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 import requests
 from time import sleep
+import json
 
 token='5dfd6b0dee902310df772082421968f4c06443abecbc082a8440cb18910a56daca73ac8d04b25154a1128'
 url = 'https://oauth.vk.com/authorize'
 APP_ID = '6160914'
 VERSION = '5.67'
+USER_ID = '5030613'
 
 
 def get_friends_set(user_id=''):
@@ -44,7 +46,7 @@ def get_groups(user_id):
 
 
 def get_friends_group():
-    my_friends = get_friends_set('5030613')
+    my_friends = get_friends_set(USER_ID)
     friends_group = set()
     for num, friend_id in enumerate(my_friends):
         res = get_groups(friend_id)
@@ -69,24 +71,27 @@ def get_group_info(id):
         }
     response = requests.get('https://api.vk.com/method/groups.getById', params)
     res = response.json()
+    if res.get('error'):
+        return 1
     result_dict = {
             'name': res['response'][0]['name'],
             'gid': res['response'][0]['id'],
             'members_count': res['response'][0]['members_count'],
             }
     return(result_dict)
- 
-    
+
+
 def get_only_my_group():
     my_group = get_groups('5030613')
     friends_group = get_friends_group()
     my_group -= friends_group
     result_list = []
     for group_id in my_group:
-        print(group_id)
         group_info = get_group_info(group_id)
-        result_list.append(group_info)
+        if (group_info != 1):
+            result_list.append(group_info)
+    with open('groups.json', 'w', encoding='utf-8') as f:
+        json.dump(result_list, f, indent=2, ensure_ascii=False)
     return result_list
-    
-print(get_only_my_group())
 
+print(get_only_my_group())
