@@ -45,7 +45,7 @@ def get_groups(user_id):
 
 
 def get_friends_group():
-    my_friends = get_friends_set()
+    my_friends = get_friends_set('5030613')
     friends_group = set()
     for num, friend_id in enumerate(my_friends):
         print(friend_id)
@@ -61,5 +61,5 @@ def get_friends_group():
         sleep(0.34)
     return(friends_group)
 
-print(get_groups('5030613'))
+print(get_friends_group())
 
