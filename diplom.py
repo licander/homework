@@ -38,25 +38,28 @@ def get_groups(user_id):
         }
     response = requests.get('https://api.vk.com/method/groups.get', params)
     res = response.json()
-    return res
+    if res.get('error'):
+        return 1
+    group_set = set(res['response']['items'])
+    return group_set
 
 
-def get_general_friends():
+def get_friends_group():
     my_friends = get_friends_set()
-    general_friends = set()
+    friends_group = set()
     for num, friend_id in enumerate(my_friends):
         print(friend_id)
-        res = get_friends_set(friend_id)
+        res = get_groups(friend_id)
         if res != 1:
             if num == 0:
-                general_friends = get_friends_set(friend_id)
+                friends_group = get_groups(friend_id)
                 continue
             else:
-                friends = get_friends_set(friend_id)
-                if friends != 1:
-                    general_friends = general_friends & friends
+                groups = get_groups(friend_id)
+                if groups != 1:
+                    friends_group = friends_group | groups
         sleep(0.34)
-    return(general_friends)
+    return(friends_group)
 
 print(get_groups('5030613'))
-# {167837}
+
