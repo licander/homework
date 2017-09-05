@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from urllib.parse import urlencode
 import requests
 from time import sleep
 
@@ -48,7 +47,6 @@ def get_friends_group():
     my_friends = get_friends_set('5030613')
     friends_group = set()
     for num, friend_id in enumerate(my_friends):
-        print(friend_id)
         res = get_groups(friend_id)
         if res != 1:
             if num == 0:
@@ -61,13 +59,34 @@ def get_friends_group():
         sleep(0.34)
     return(friends_group)
 
-print(get_friends_group())
 
-
+def get_group_info(id):
+    params = {
+        'access_token': token,
+        'group_id': id,
+        'v': VERSION,
+        'fields': 'members_count,',
+        }
+    response = requests.get('https://api.vk.com/method/groups.getById', params)
+    res = response.json()
+    result_dict = {
+            'name': res['response'][0]['name'],
+            'gid': res['response'][0]['id'],
+            'members_count': res['response'][0]['members_count'],
+            }
+    return(result_dict)
+ 
+    
 def get_only_my_group():
     my_group = get_groups('5030613')
     friends_group = get_friends_group()
     my_group -= friends_group
-    return my_group
+    result_list = []
+    for group_id in my_group:
+        print(group_id)
+        group_info = get_group_info(group_id)
+        result_list.append(group_info)
+    return result_list
     
+print(get_only_my_group())
 
