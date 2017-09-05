@@ -13,7 +13,7 @@ def get_friends_set(user_id=''):
     params = {
         'access_token': token,
         'v': VERSION,
-        'count': 1000,
+        'count': 10,
         'fields': 'nickname',
         }
     if user_id:
@@ -62,4 +62,12 @@ def get_friends_group():
     return(friends_group)
 
 print(get_friends_group())
+
+
+def get_only_my_group():
+    my_group = get_groups('5030613')
+    friends_group = get_friends_group()
+    my_group -= friends_group
+    return my_group
+    
 
