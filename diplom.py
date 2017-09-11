@@ -14,18 +14,19 @@ def get_friends_set(user_id=''):
     params = {
         'access_token': token,
         'v': VERSION,
-        'count': 10,
+        'count': 100,
         'fields': 'nickname',
         }
     if user_id:
         params['user_id'] = user_id
     response = requests.get('https://api.vk.com/method/friends.get', params)
     res = response.json()
-    if res.get('error'):
-        return 1
-    friend_set = set()
-    for friend in res['response']['items']:
-        friend_set.add(friend['id'])
+    try:
+        friend_set = set()
+        for friend in res['response']['items']:
+            friend_set.add(friend['id'])
+    except KeyError:
+        friend_set = 1
     return friend_set
 
 
@@ -39,14 +40,16 @@ def get_groups(user_id):
         }
     response = requests.get('https://api.vk.com/method/groups.get', params)
     res = response.json()
-    if res.get('error'):
-        return 1
-    group_set = set(res['response']['items'])
+    try:
+        group_set = set(res['response']['items'])
+    except KeyError:
+        group_set = 1
     return group_set
 
 
 def get_friends_group():
     my_friends = get_friends_set(USER_ID)
+    friends_num = len(my_friends)
     friends_group = set()
     for num, friend_id in enumerate(my_friends):
         res = get_groups(friend_id)
@@ -59,6 +62,7 @@ def get_friends_group():
                 if groups != 1:
                     friends_group = friends_group | groups
         sleep(0.34)
+        print('Обработано друзей:', num + 1, '/', friends_num)
     return(friends_group)
 
 
@@ -71,13 +75,14 @@ def get_group_info(id):
         }
     response = requests.get('https://api.vk.com/method/groups.getById', params)
     res = response.json()
-    if res.get('error'):
-        return 1
-    result_dict = {
-            'name': res['response'][0]['name'],
-            'gid': res['response'][0]['id'],
-            'members_count': res['response'][0]['members_count'],
-            }
+    try:
+        result_dict = {
+                'name': res['response'][0]['name'],
+                'gid': res['response'][0]['id'],
+                'members_count': res['response'][0]['members_count'],
+                }
+    except KeyError:
+        result_dict = 1
     return(result_dict)
 
 
@@ -86,10 +91,12 @@ def get_only_my_group():
     friends_group = get_friends_group()
     my_group -= friends_group
     result_list = []
-    for group_id in my_group:
+    groups_num = len(my_group)
+    for num, group_id in enumerate(my_group):
         group_info = get_group_info(group_id)
         if (group_info != 1):
             result_list.append(group_info)
+        print('Обработано групп:', num + 1, '/', groups_num)
     with open('groups.json', 'w', encoding='utf-8') as f:
         json.dump(result_list, f, indent=2, ensure_ascii=False)
     return result_list
