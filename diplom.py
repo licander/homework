@@ -14,7 +14,7 @@ def get_friends_set(user_id=''):
     params = {
         'access_token': token,
         'v': VERSION,
-        'count': 100,
+        'count': 10,
         'fields': 'nickname',
         }
     if user_id:
@@ -101,4 +101,5 @@ def get_only_my_group():
         json.dump(result_list, f, indent=2, ensure_ascii=False)
     return result_list
 
-print(get_only_my_group())
+if __name__ == '__main__':
+    print(get_only_my_group())
