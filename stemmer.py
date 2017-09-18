@@ -1,18 +1,31 @@
 # -*- coding: utf-8 -*-
 from pymystem3 import Mystem
-text = "Чему стоит научить ребёнка в первом классе. В начальной школе иногда важнее не умение читать или писать, \
-а другие вещи. Например, стоит рассказать ребёнку, как бороться со скукой на уроках и насилием со стороны учителей, \
-которое может выражаться вовсе не в физической форме."
+from mean_text_from_url import get_mean_text_without_format
+text = get_mean_text_without_format('http://grand-lux.ru/shop/UID_18221.html')
 
 def text_to_unigram(text):
     m = Mystem()
     lemmas = m.lemmatize(text)
-    bad_symbols = ('!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', ';', ':', '"', '\'', ',', '.', '\n', ' ',
+    bad_symbols = ('!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', ';', ':', '"', '\'', ',', '.', '\n', ' \n', ' ',
                    '! ', '; ', ': ', '"', '\'', ', ', '. ')
     for i, lemma in enumerate(lemmas):
         if lemma in bad_symbols:
             del lemmas[i]
-    print(lemmas)
+    return(lemmas)
+
+
+def find_unigram_in_url(query, url):
+    query_list = text_to_unigram(query)
+    text = get_mean_text_without_format(url)
+    word_dict = dict()
+    for word in query_list:
+        word_dict[word] = 0
+    
+    text_list = text_to_unigram(text)
+    for word in text_list:
+        if word in query_list:
+            word_dict[word] += 1
+    return(word_dict)
 
     
-text_to_unigram(text)
+print(find_unigram_in_url('автомобильный видеорегистратор', 'https://new-elektronika.ru/catalog/avtoelektronika-i-tehnika/videoregistratory/'))
