@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
-# Метод разделяет текст на теговые и не теговые области. Достаточно большая нетеговая область - текст.
+# Метод разделяет текст на теговые и не теговые области.
+# Достаточно большая нетеговая область - текст.
 # Теги форматирования - как слова
 # попытка удалить одиночные теги
 import re
 import chardet
-import copy
+
 
 def get_decode_html(file_name):
     with open(file_name, 'rb') as file:
@@ -12,35 +13,38 @@ def get_decode_html(file_name):
         coding = chardet.detect(data)
         if coding['language'] != 'Russian':
             coding['encoding'] = 'utf8'
-        data = data.decode(coding['encoding'])   
+        data = data.decode(coding['encoding'])
     return data
 
+
 def write_in_file(file_name, html, code):
-    new_file = open(file_name, 'w', encoding=code) 
-    new_file.write(html) 
+    new_file = open(file_name, 'w', encoding=code)
+    new_file.write(html)
     new_file.close()
 
+
 def first_part(text):
-    title = re.search(r'<title[^>]*?>.*?</title>', text, flags=re.S|re.I)
+    title = re.search(r'<title[^>]*?>.*?</title>', text, flags=re.S | re.I)
     if title:
         first_part = '<html><head>' + title.group(0) + '</head><body>'
     else:
         first_part = '<html><head></head><body>'
     return first_part
 
+
 def clear_html(text):
-    text = re.sub(r'<!DOCTYPE html>', '', text, flags=re.S|re.I)
-    text = re.sub(r'<head[^>]*?>.*?</head>', '', text, flags=re.S|re.I)
-    text = re.sub(r'<!--.*?-->', '', text, flags=re.S|re.I)
-    text = re.sub(r'<script[^>]*?>.*?</script>', '<script></script>', text, flags=re.S|re.I)
-    text = re.sub(r'<style[^>]*?>.*?</style>', '<style></style>', text, flags=re.S|re.I)
-    text = re.sub(r'<form[^>]*?>.*?</form>', '<form></form>', text, flags=re.S|re.I)
-    text = re.sub(r'\n', ' ', text, flags=re.S|re.I)
-    text = re.sub(r'\s+', ' ', text, flags=re.S|re.I)
-    text = re.sub(r'&nbsp;', '', text, flags=re.S|re.I)
-    text = re.sub(r'&quot;', '', text, flags=re.S|re.I)
-    text = re.sub(r'&rarr;', '', text, flags=re.S|re.I)
-    
+    text = re.sub(r'<!DOCTYPE html>', '', text, flags=re.S | re.I)
+    text = re.sub(r'<head[^>]*?>.*?</head>', '', text, flags=re.S | re.I)
+    text = re.sub(r'<!--.*?-->', '', text, flags=re.S | re.I)
+    text = re.sub(r'<script[^>]*?>.*?</script>', '<script></script>', text, flags=re.S | re.I)
+    text = re.sub(r'<style[^>]*?>.*?</style>', '<style></style>', text, flags=re.S | re.I)
+    text = re.sub(r'<form[^>]*?>.*?</form>', '<form></form>', text, flags=re.S | re.I)
+    text = re.sub(r'\n', ' ', text, flags=re.S | re.I)
+    text = re.sub(r'\s+', ' ', text, flags=re.S | re.I)
+    text = re.sub(r'&nbsp;', '', text, flags=re.S | re.I)
+    text = re.sub(r'&quot;', '', text, flags=re.S | re.I)
+    text = re.sub(r'&rarr;', '', text, flags=re.S | re.I)
+
     text = re.sub(r'<em[^>]*?>', '', text, flags=re.S|re.I)
     text = re.sub(r'</em>', '', text, flags=re.S|re.I)
     text = re.sub(r'<strong[^>]*?>', '', text, flags=re.S|re.I)
@@ -54,7 +58,7 @@ def clear_html(text):
     text = re.sub(r'</font>', '', text, flags=re.S|re.I)
     text = re.sub(r'<center[^>]*?>', '', text, flags=re.S|re.I)
     text = re.sub(r'</center>', '', text, flags=re.S|re.I)
-    
+
     text = re.sub(r'<h[0-9][^>]*?>', ' !F!h1 ', text, flags=re.S|re.I)
     text = re.sub(r'</h[0-9]>', ' !F!/h1 ', text, flags=re.S|re.I)
     text = re.sub(r'<br[^>]*?>', ' !F!br ', text, flags=re.S|re.I)

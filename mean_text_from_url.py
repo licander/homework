@@ -225,6 +225,7 @@ def get_mean_text_without_format(url):
     text = get_mean_text_with_format(url)
     if (type(text) == int):
         return(text)
+    text = re.sub(r'<title>.*?</title>', '', text, flags=re.S|re.I)
     text = delete_all_tags(text)
     text = text.lower()
     text = re.sub(r'[^а-я]+', ' ', text, flags=re.S|re.I)

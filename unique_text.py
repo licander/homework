@@ -13,12 +13,12 @@ def from_text_to_trigram(text):
     return(trigram_set)
         
 
-def get_serp(query, region):
+def get_serp(query, region, deep):
     url = 'http://search-analytics.ru/services/for_python/position.php'
     data = {
             'query': query,
             'region': region,
-            'deep': 30
+            'deep': deep
             }
     url = '?'.join((url, urlencode(data)))
     serp = get_content_from_url(url)
@@ -101,4 +101,4 @@ def find_urls_from_same_site(query1, query2, region):
     
 # print(top_unique('Источники напряжения 12V в защитном кожухе', '213'))
 # print(find_urls_from_same_site('Набор 6 бокалов для шампанского 180 мл', 'Набор 6 бокалов для шампанского Bubbles 175 мл', '213'))
-print(compare_urls('http://www.vamsvet.ru/catalog/product/odeon_lyustra-2565-7c/', 'http://www.vamsvet.ru/catalog/product/lyustra-potolochnaya-a2550pl-3cc/'))
+# print(compare_urls('http://www.vamsvet.ru/catalog/product/odeon_lyustra-2565-7c/', 'http://www.vamsvet.ru/catalog/product/lyustra-potolochnaya-a2550pl-3cc/'))
